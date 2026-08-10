@@ -1,0 +1,17 @@
+{
+  "name": "MorsePath",
+  "short_name": "Morse",
+  "description": "Interactive Morse code learning app",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#10151b",
+  "background_color": "#10151b",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

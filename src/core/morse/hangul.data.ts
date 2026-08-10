@@ -1,0 +1,41 @@
+import type { MorseEntry } from './types'
+
+export const HANGUL_MORSE_ENTRIES: readonly MorseEntry[] = [
+  // Consonants (자음)
+  { symbol: 'ㄱ', code: ['.', '-', '.'], label: '기역' },
+  { symbol: 'ㄴ', code: ['.', '.', '-', '.'], label: '니은' },
+  { symbol: 'ㄷ', code: ['-', '.', '.'], label: '디귿' },
+  { symbol: 'ㄹ', code: ['.', '.', '.', '-'], label: '리을' },
+  { symbol: 'ㅁ', code: ['-', '-'], label: '미음' },
+  { symbol: 'ㅂ', code: ['-', '.', '.', '.'], label: '비읍' },
+  { symbol: 'ㅅ', code: ['-', '.', '.'], label: '시옷' },
+  { symbol: 'ㅇ', code: ['-', '.', '-'], label: '이응' },
+  { symbol: 'ㅈ', code: ['.', '-', '-', '.'], label: '지읒' },
+  { symbol: 'ㅊ', code: ['-', '.', '-', '.'], label: '치읓' },
+  { symbol: 'ㅋ', code: ['-', '.', '.', '-'], label: '키읔' },
+  { symbol: 'ㅌ', code: ['-', '-', '.'], label: '티읕' },
+  { symbol: 'ㅍ', code: ['-', '-', '-'], label: '피읖' },
+  { symbol: 'ㅎ', code: ['.', '-', '.', '-'], label: '히읗' },
+  // Vowels (모음)
+  { symbol: 'ㅏ', code: ['.'], label: '아' },
+  { symbol: 'ㅑ', code: ['.', '.'], label: '야' },
+  { symbol: 'ㅓ', code: ['-'], label: '어' },
+  { symbol: 'ㅕ', code: ['-', '.', '-'], label: '여' },
+  { symbol: 'ㅗ', code: ['.', '-'], label: '오' },
+  { symbol: 'ㅛ', code: ['.', '.', '-'], label: '요' },
+  { symbol: 'ㅜ', code: ['.', '.', '.', '.'], label: '우' },
+  { symbol: 'ㅠ', code: ['-', '.'], label: '유' },
+  { symbol: 'ㅡ', code: ['-', '.', '-', '.'], label: '으' },
+  { symbol: 'ㅣ', code: ['.'], label: '이' },
+  // Digits 0-9 (same as international standard)
+  { symbol: '0', code: ['-', '-', '-', '-', '-'], label: '0' },
+  { symbol: '1', code: ['.', '-', '-', '-', '-'], label: '1' },
+  { symbol: '2', code: ['.', '.', '-', '-', '-'], label: '2' },
+  { symbol: '3', code: ['.', '.', '.', '-', '-'], label: '3' },
+  { symbol: '4', code: ['.', '.', '.', '.', '-'], label: '4' },
+  { symbol: '5', code: ['.', '.', '.', '.', '.'], label: '5' },
+  { symbol: '6', code: ['-', '.', '.', '.', '.'], label: '6' },
+  { symbol: '7', code: ['-', '-', '.', '.', '.'], label: '7' },
+  { symbol: '8', code: ['-', '-', '-', '.', '.'], label: '8' },
+  { symbol: '9', code: ['-', '-', '-', '-', '.'], label: '9' },
+] as const
