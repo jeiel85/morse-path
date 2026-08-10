@@ -6,6 +6,7 @@ import { PracticePanel } from '../features/practice/PracticePanel'
 import { KeyerPanel } from '../features/keyer/KeyerPanel'
 import { createMorseAudio } from '../audio'
 import { loadSettings, saveSettings, type AppSettings } from '../settings'
+import { format, t } from '../ui/copy'
 import type { MorseAlphabet } from '../core/morse/types'
 import '../styles/app.css'
 
@@ -13,15 +14,15 @@ export type AppMode = 'explore' | 'decode' | 'encode' | 'practice' | 'keyer'
 
 interface ModeDef {
   id: AppMode
-  label: string
+  key: 'modeExplore' | 'modeDecode' | 'modeEncode' | 'modePractice' | 'modeKeyer'
 }
 
 const MODES: ModeDef[] = [
-  { id: 'explore', label: 'Explore' },
-  { id: 'decode', label: 'Decode' },
-  { id: 'encode', label: 'Encode' },
-  { id: 'practice', label: 'Practice' },
-  { id: 'keyer', label: 'Keyer' },
+  { id: 'explore', key: 'modeExplore' },
+  { id: 'decode', key: 'modeDecode' },
+  { id: 'encode', key: 'modeEncode' },
+  { id: 'practice', key: 'modePractice' },
+  { id: 'keyer', key: 'modeKeyer' },
 ]
 
 export function AppShell() {
@@ -35,6 +36,11 @@ export function AppShell() {
     audio.setVolume(settings.volume)
     audio.setFrequency(settings.toneFrequency)
   }, [audio, settings])
+
+  useEffect(() => {
+    document.documentElement.lang = settings.alphabet === 'hangul' ? 'ko' : 'en'
+    document.title = format('appTitle', settings.alphabet)
+  }, [settings.alphabet])
 
   const updateSettings = useCallback((patch: Partial<AppSettings>) => {
     setSettings((prev) => {
@@ -56,26 +62,28 @@ export function AppShell() {
     wpm: settings.wpm,
   }
 
+  const alphabetDisplay = settings.alphabet === 'english' ? t('alphabetEnglish', settings.alphabet) : t('alphabetHangul', settings.alphabet)
+
   return (
     <div className="app-shell">
       <header className="app-header">
         <div className="brand">
-          <img src="/favicon.svg" alt="" width={32} height={32} />
-          <span>MorsePath</span>
+          <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" width={32} height={32} />
+          <span>{t('appTitle', settings.alphabet)}</span>
         </div>
         <div className="header-controls">
           <button
             type="button"
             className="alphabet-toggle"
             onClick={toggleAlphabet}
-            aria-label={`Current alphabet is ${settings.alphabet}. Toggle alphabet.`}
+            aria-label={format('alphabetToggleLabel', settings.alphabet, { alphabet: alphabetDisplay })}
           >
-            {settings.alphabet === 'english' ? 'English' : 'Hangul'}
+            {alphabetDisplay}
           </button>
         </div>
       </header>
 
-      <nav className="mode-tabs" role="tablist" aria-label="Mode">
+      <nav className="mode-tabs" role="tablist" aria-label={t('modes', settings.alphabet)}>
         {MODES.map((m) => (
           <button
             key={m.id}
@@ -85,7 +93,7 @@ export function AppShell() {
             className={`mode-tab ${mode === m.id ? 'active' : ''}`}
             onClick={() => setMode(m.id)}
           >
-            {m.label}
+            {t(m.key, settings.alphabet)}
           </button>
         ))}
       </nav>
@@ -100,7 +108,7 @@ export function AppShell() {
 
       <footer className="app-footer">
         <label className="settings-control">
-          WPM
+          {t('wpm', settings.alphabet)}
           <input
             type="range"
             min={5}
@@ -111,7 +119,7 @@ export function AppShell() {
           <span>{settings.wpm}</span>
         </label>
         <label className="settings-control">
-          Volume
+          {t('volume', settings.alphabet)}
           <input
             type="range"
             min={0}

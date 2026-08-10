@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import { t } from '../../ui/copy'
 import type { MorseAlphabet, MorseCode, MorseEntry } from '../../core/morse/types'
 import { ENGLISH_MORSE_ENTRIES, HANGUL_MORSE_ENTRIES } from '../../core/morse'
 import type { MorseAudio } from '../../audio'
@@ -82,20 +83,27 @@ export function PracticePanel({
     setScore({ correct: 0, total: 0 })
   }, [alphabet])
 
+  const feedbackText =
+    feedback === 'idle'
+      ? '\u00A0'
+      : feedback === 'correct'
+        ? `${t('correct', alphabet)} ${current.symbol} ${t('equals', alphabet)} ${formatSignals(current.code)}`
+        : `${t('wrong', alphabet)} ${current.symbol} ${t('equals', alphabet)} ${formatSignals(current.code)}`
+
   return (
-    <section className="feature-panel practice-panel" aria-label="Practice">
+    <section className="feature-panel practice-panel" aria-label={t('practiceTitle', alphabet)}>
       <div className="panel-header">
-        <h2>Practice</h2>
-        <p>Listen to the code and type the character you hear.</p>
+        <h2>{t('practiceTitle', alphabet)}</h2>
+        <p>{t('practiceDescription', alphabet)}</p>
       </div>
 
       <div className={`practice-card ${feedback}`}>
         <div className="score" aria-live="polite">
-          Score: {score.correct}/{score.total}
+          {t('score', alphabet)} {score.correct}/{score.total}
         </div>
 
         <label htmlFor="practice-input" className="sr-only">
-          Your answer
+          {t('yourAnswer', alphabet)}
         </label>
         <input
           id="practice-input"
@@ -108,25 +116,23 @@ export function PracticePanel({
               check()
             }
           }}
-          placeholder="Type the character"
-          aria-label="Your answer"
+          placeholder={t('typeTheCharacter', alphabet)}
+          aria-label={t('yourAnswer', alphabet)}
         />
 
         <div className="feedback" aria-live="polite">
-          {feedback === 'idle' && '\u00A0'}
-          {feedback === 'correct' && `Correct! ${current.symbol} = ${formatSignals(current.code)}`}
-          {feedback === 'wrong' && `Wrong. The answer was ${current.symbol} = ${formatSignals(current.code)}`}
+          {feedbackText}
         </div>
 
         <div className="button-row">
           <button className="btn secondary" onClick={replay}>
-            Replay
+            {t('replay', alphabet)}
           </button>
           <button className="btn primary" onClick={check}>
-            Check
+            {t('check', alphabet)}
           </button>
           <button className="btn secondary" onClick={next}>
-            Next
+            {t('next', alphabet)}
           </button>
         </div>
       </div>

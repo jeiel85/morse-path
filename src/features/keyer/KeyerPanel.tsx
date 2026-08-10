@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
+import { t } from '../../ui/copy'
 import type { MorseAlphabet, MorseCode } from '../../core/morse/types'
 import { createMorseEngine } from '../../core/morse/MorseEngine'
 import type { MorseAudio } from '../../audio'
@@ -119,16 +120,16 @@ export function KeyerPanel({
     : (decoded?.symbol ?? (signals.length > 0 ? '?' : ''))
 
   return (
-    <section className="feature-panel keyer-panel" aria-label="Keyer">
+    <section className="feature-panel keyer-panel" aria-label={t('keyerTitle', alphabet)}>
       <div className="panel-header">
-        <h2>Keyer</h2>
-        <p>Tap for dot, hold for dash. Pause to finish a character.</p>
+        <h2>{t('keyerTitle', alphabet)}</h2>
+        <p>{t('keyerDescription', alphabet)}</p>
       </div>
 
       <button
         type="button"
         className={`keyer-pad ${isPressed ? 'pressed' : ''}`}
-        aria-label="Morse keyer. Short tap for dot, long hold for dash."
+        aria-label={t('keyerPadLabel', alphabet)}
         onPointerDown={startPress}
         onPointerUp={endPress}
         onPointerLeave={isPressed ? endPress : undefined}
@@ -139,7 +140,7 @@ export function KeyerPanel({
           style={{ transform: `scale(${Math.min(1 + pressDuration / 400, 2)})` }}
           aria-hidden="true"
         >
-          {feedbackSymbol || 'Tap or hold'}
+          {feedbackSymbol || t('tapOrHold', alphabet)}
         </span>
       </button>
 
@@ -152,7 +153,7 @@ export function KeyerPanel({
       </div>
 
       <div className="output-area">
-        <label htmlFor="keyer-output">Decoded text</label>
+        <label htmlFor="keyer-output">{t('decodedTextKeyer', alphabet)}</label>
         <output id="keyer-output">{output}</output>
       </div>
     </section>

@@ -1,5 +1,7 @@
-const CACHE_NAME = 'morse-path-v1'
-const ASSETS = ['/', '/index.html', '/manifest.json']
+const CACHE_NAME = 'morse-path-v2'
+
+const basePath = new URL(self.location.href).pathname.replace(/\/sw\.js$/, '') || ''
+const ASSETS = [`${basePath}/`, `${basePath}/index.html`, `${basePath}/manifest.json`]
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)))

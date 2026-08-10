@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { MorseTree } from '../../components/MorseTree/MorseTree'
+import { t } from '../../ui/copy'
 import type { MorseAlphabet, MorseCode } from '../../core/morse/types'
 import { createMorseEngine } from '../../core/morse/MorseEngine'
 import type { MorseAudio } from '../../audio'
@@ -72,26 +73,26 @@ export function ExplorePanel({
   }, [audio, code, wpm])
 
   return (
-    <section className="feature-panel explore-panel" aria-label="Explore">
+    <section className="feature-panel explore-panel" aria-label={t('exploreTitle', alphabet)}>
       <div className="panel-header">
-        <h2>Explore</h2>
-        <p>Select a node in the tree or use arrow keys to discover Morse code.</p>
+        <h2>{t('exploreTitle', alphabet)}</h2>
+        <p>{t('exploreDescription', alphabet)}</p>
       </div>
 
       <div className="explore-display" aria-live="polite">
         {decoded !== null && decoded !== undefined ? (
           <div className="character-card">
-            <span className="character-symbol" aria-label="Character">
+            <span className="character-symbol" aria-label={t('characterAriaLabel', alphabet)}>
               {decoded.symbol}
             </span>
             <span className="character-label">{decoded.label}</span>
-            <span className="character-code" aria-label="Morse code">
+            <span className="character-code" aria-label={t('morseCodeAriaLabel', alphabet)}>
               {formatSignals(decoded.code)}
             </span>
           </div>
         ) : (
           <div className="character-card empty">
-            {code.length > 0 ? formatSignals(code) : 'Select a tree node'}
+            {code.length > 0 ? formatSignals(code) : t('selectTreeNode', alphabet)}
           </div>
         )}
       </div>
@@ -101,13 +102,13 @@ export function ExplorePanel({
         onClick={() => playSignals(audio, code, wpm)}
         disabled={code.length === 0}
       >
-        Play code
+        {t('playCode', alphabet)}
       </button>
 
       <MorseTree alphabet={alphabet} activeCode={code} onNodeSelect={handleNodeSelect} />
 
       <p className="keyboard-hint">
-        ← dot · → dash · Enter play · Backspace up
+        {t('keyboardHint', alphabet)}
       </p>
     </section>
   )

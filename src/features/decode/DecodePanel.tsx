@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import { t } from '../../ui/copy'
 import type { MorseAlphabet, MorseCode } from '../../core/morse/types'
 import { createMorseEngine } from '../../core/morse/MorseEngine'
 import type { MorseAudio } from '../../audio'
@@ -72,14 +73,14 @@ export function DecodePanel({
   }, [submit])
 
   return (
-    <section className="feature-panel decode-panel" aria-label="Decode">
+    <section className="feature-panel decode-panel" aria-label={t('decodeTitle', alphabet)}>
       <div className="panel-header">
-        <h2>Decode</h2>
-        <p>Enter dots and dashes to decode Morse code into text.</p>
+        <h2>{t('decodeTitle', alphabet)}</h2>
+        <p>{t('decodeDescription', alphabet)}</p>
       </div>
 
       <div className="signal-display" aria-live="polite">
-        {signals.length > 0 ? formatSignals(signals) : 'Enter Morse code'}
+        {signals.length > 0 ? formatSignals(signals) : t('enterMorseCode', alphabet)}
       </div>
 
       <div className="decoded-preview" aria-live="polite">
@@ -87,25 +88,25 @@ export function DecodePanel({
       </div>
 
       <div className="button-row">
-        <button className="btn primary" onClick={() => addSignal('.')} aria-label="Dot">
-          · Dot
+        <button className="btn primary" onClick={() => addSignal('.')} aria-label={t('dot', alphabet)}>
+          · {t('dot', alphabet)}
         </button>
-        <button className="btn primary" onClick={() => addSignal('-')} aria-label="Dash">
-          − Dash
+        <button className="btn primary" onClick={() => addSignal('-')} aria-label={t('dash', alphabet)}>
+          − {t('dash', alphabet)}
         </button>
         <button className="btn secondary" onClick={clear}>
-          Clear
+          {t('clear', alphabet)}
         </button>
         <button className="btn secondary" onClick={handlePlay} disabled={signals.length === 0}>
-          Play
+          {t('play', alphabet)}
         </button>
         <button className="btn primary" onClick={submit}>
-          Submit (space)
+          {t('submitSpace', alphabet)}
         </button>
       </div>
 
       <div className="output-area">
-        <label htmlFor="decode-output">Decoded text</label>
+        <label htmlFor="decode-output">{t('decodedText', alphabet)}</label>
         <output id="decode-output">{output}</output>
       </div>
     </section>

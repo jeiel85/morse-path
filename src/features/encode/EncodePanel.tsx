@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { t } from '../../ui/copy'
 import type { MorseAlphabet, MorseCode, MorseEntry } from '../../core/morse/types'
 import { createMorseEngine } from '../../core/morse/MorseEngine'
 import { createHangulComposer } from '../../core/hangul/HangulComposer'
@@ -79,14 +80,14 @@ export function EncodePanel({
   }
 
   return (
-    <section className="feature-panel encode-panel" aria-label="Encode">
+    <section className="feature-panel encode-panel" aria-label={t('encodeTitle', alphabet)}>
       <div className="panel-header">
-        <h2>Encode</h2>
-        <p>Type text to see its Morse encoding.</p>
+        <h2>{t('encodeTitle', alphabet)}</h2>
+        <p>{t('encodeDescription', alphabet)}</p>
       </div>
 
       <label htmlFor="encode-input" className="sr-only">
-        Text to encode
+        {t('textToEncode', alphabet)}
       </label>
       <input
         id="encode-input"
@@ -94,8 +95,8 @@ export function EncodePanel({
         className="text-input"
         value={text}
         onChange={(event) => setText(event.target.value)}
-        placeholder={alphabet === 'hangul' ? 'Type Hangul or text' : 'Type text to encode'}
-        aria-label="Text to encode"
+        placeholder={alphabet === 'hangul' ? t('placeholderHangul', alphabet) : t('placeholderEnglish', alphabet)}
+        aria-label={t('textToEncode', alphabet)}
       />
 
       <button
@@ -103,12 +104,12 @@ export function EncodePanel({
         onClick={handlePlayAll}
         disabled={encoded.length === 0}
       >
-        Play all
+        {t('playAll', alphabet)}
       </button>
 
       <div className="encoded-output" aria-live="polite">
         {encoded.length === 0 ? (
-          <p className="empty-hint">Start typing to see Morse code.</p>
+          <p className="empty-hint">{t('emptyHint', alphabet)}</p>
         ) : (
           <ul className="encoded-char-list">
             {encoded.map((item, index) => (

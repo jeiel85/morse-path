@@ -1,4 +1,5 @@
 import { useMemo, useCallback } from 'react'
+import { t, format } from '../../ui/copy'
 import type { MorseAlphabet, MorseCode, MorseEntry, MorseNode } from '../../core/morse/types'
 import { createMorseEngine } from '../../core/morse/MorseEngine'
 
@@ -67,7 +68,7 @@ function nodeLabel(node: TreeNodeInfo, alphabet: MorseAlphabet): string {
     return `${node.entry.symbol}${node.entry.label && node.entry.label !== node.entry.symbol ? ` (${node.entry.label})` : ''}`
   }
   if (node.code.length === 0) {
-    return alphabet === 'hangul' ? 'Start' : 'Start'
+    return t('start', alphabet)
   }
   return ''
 }
@@ -101,6 +102,8 @@ function TreeNode({
 
   const label = nodeLabel(node, alphabet)
   const branchLabel = node.code.length > 0 ? (node.code[node.code.length - 1] === '-' ? '−' : '·') : ''
+
+  const signalNames = node.code.map((s) => (s === '-' ? t('dash', alphabet).toLowerCase() : t('dot', alphabet).toLowerCase())).join(' ')
 
   return (
     <g className="tree-node-group">
@@ -143,7 +146,7 @@ function TreeNode({
         className={`tree-node ${isActive ? 'active' : ''}`}
         role="button"
         tabIndex={0}
-        aria-label={label || `Morse code ${node.code.map((s) => (s === '-' ? 'dash' : 'dot')).join(' ')}`}
+        aria-label={label || `${t('morseCode', alphabet)} ${signalNames}`}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
       />
@@ -162,15 +165,17 @@ export function MorseTree({ alphabet, activeCode, onNodeSelect }: MorseTreeProps
     return buildTreeNodes(tree, [], 0, ROOT_X, ROOT_Y)
   }, [alphabet])
 
+  const alphabetName = alphabet === 'hangul' ? t('alphabetHangul', alphabet) : t('alphabetEnglish', alphabet)
+
   return (
     <section className="morse-tree" aria-labelledby="morse-tree-title">
       <h2 id="morse-tree-title" className="sr-only">
-        Morse tree
+        {t('morseTreeTitle', alphabet)}
       </h2>
       <svg
         viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
         role="img"
-        aria-label={`Interactive Morse tree for ${alphabet === 'hangul' ? 'Hangul' : 'English'} alphabet`}
+        aria-label={format('morseTreeAria', alphabet, { alphabet: alphabetName })}
         preserveAspectRatio="xMidYMid meet"
       >
         <rect
