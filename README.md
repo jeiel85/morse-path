@@ -132,3 +132,5 @@ GitHub Pages의 프로젝트 경로(`/morse-path/`)를 위해 Vite base path와 
 ## 라이선스
 
 현재 저장소에는 별도 라이선스 파일이 포함되어 있지 않습니다. 재사용 또는 배포가 필요하다면 라이선스 정책을 먼저 확정해 주세요.
+
+<!-- hermes-agent connectivity test 2026-08-25 -->
