@@ -1,30 +1,85 @@
-const CACHE_NAME = 'morse-path-v2'
-
-const basePath = new URL(self.location.href).pathname.replace(/\/sw\.js$/, '') || ''
-const ASSETS = [`${basePath}/`, `${basePath}/index.html`, `${basePath}/manifest.json`]
+/* MorsePath 서비스워커: 오프라인 실행과 설치형 PWA 지원.
+ * - 내비게이션: network-first, 실패 시 캐시된 index.html
+ * - 같은 출처 정적 자산: stale-while-revalidate
+ * 배포 내용이 바뀌어 캐시를 강제로 비워야 하면 CACHE_VERSION을 올린다. */
+const CACHE_VERSION = 'v3';
+const CACHE_NAME = `morse-path-${CACHE_VERSION}`;
+const PRECACHE_URLS = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
+];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)))
-})
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(PRECACHE_URLS))
+      .then(() => self.skipWaiting())
+  );
+});
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))))
-  )
-})
+    caches.keys()
+      .then((keys) => Promise.all(
+        keys
+          .filter((key) => key.startsWith('morse-path-') && key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
+      ))
+      .then(() => self.clients.claim())
+  );
+});
+
+async function putIfOk(request, response) {
+  if (response && response.ok && response.type === 'basic') {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.put(request, response.clone());
+  }
+  return response;
+}
+
+async function handleNavigation(request) {
+  try {
+    const response = await fetch(request);
+    return await putIfOk(request, response);
+  } catch (error) {
+    const cached = (await caches.match(request, { ignoreSearch: true }))
+      || (await caches.match(new URL('./index.html', self.registration.scope).href))
+      || (await caches.match(self.registration.scope));
+    if (cached) return cached;
+    throw error;
+  }
+}
+
+async function handleAsset(event) {
+  const { request } = event;
+  const cached = await caches.match(request);
+  const network = fetch(request)
+    .then((response) => putIfOk(request, response))
+    .catch((error) => {
+      if (cached) return cached;
+      throw error;
+    });
+  if (cached) {
+    event.waitUntil(network.catch(() => undefined));
+    return cached;
+  }
+  return network;
+}
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached
-      return fetch(event.request).then((response) => {
-        if (response.ok) {
-          const clone = response.clone()
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
-        }
-        return response
-      })
-    })
-  )
-})
+  const { request } = event;
+  if (request.method !== 'GET') return;
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+  if (!url.href.startsWith(self.registration.scope)) return;
+  if (request.headers.has('range')) return;
+
+  if (request.mode === 'navigate') {
+    event.respondWith(handleNavigation(request));
+    return;
+  }
+  event.respondWith(handleAsset(event));
+});
